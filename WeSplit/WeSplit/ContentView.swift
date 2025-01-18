@@ -13,8 +13,13 @@ struct ContentView: View {
     @State private var numberOfPeople = 2
     @State private var tipPercentage = 20
     @FocusState private var amountIsFocused: Bool
-    
-    let tipPercentages = [10, 15, 20, 25, 0]
+    // This is the stride methods
+//    let tipPercentages = [10, 15, 20, 25, 0]
+//    let tipPercentages: [Int] = Array(stride(from: 0, through: 100, by: 1))
+
+    var totalAmount: Double {
+        checkAmount + checkAmount / 100 * Double(tipPercentage)
+    }
     
     var totalPerPerson: Double {
         let peopleCount = Double(numberOfPeople + 2)
@@ -44,14 +49,21 @@ struct ContentView: View {
                 }
                 Section("How much tip do you want to leave?") {
                     Picker("Tip percentage", selection: $tipPercentage) {
-                        ForEach(tipPercentages, id: \.self) {
+//                        ForEach(tipPercentages, id: \.self) {
+//                            Text($0, format: .percent)
+//                        }
+                        // This is the genral looping method
+                        ForEach(0..<101, id:\.self) {
                             Text($0, format: .percent)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(.navigationLink)
+                }
+                Section("Total Amount") {
+                    Text(totalAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                 }
 
-                Section {
+                Section("Amount per person") {
                     Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                 }
             }
