@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ViewModifierContentView: View {
     var body: some View {
         Button("Hello, world!") {
             print(type(of: self.body))
@@ -33,5 +33,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ViewModifierContentView()
 }
