@@ -7,6 +7,29 @@
 
 import SwiftUI
 
+
+struct StyleTitle: ViewModifier {
+    let titleWeight: Font.Weight
+    func body(content: Content) -> some View {
+        content.font(.largeTitle.weight(.bold))
+    }
+}
+
+extension View {
+    func titleStyled (boldness weight: Font.Weight) -> some View {
+        modifier(StyleTitle(titleWeight: weight))
+    }
+}
+
+struct FlagImage: View {
+    let contryName: String
+    var body: some View {
+        Image(contryName)
+            .clipShape(.rect(cornerRadius: 20.0))
+            .shadow(radius: 5)
+    }
+}
+
 struct ContentView: View {
     
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
@@ -22,24 +45,25 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             
-//            Color.blue
-//                .ignoresSafeArea()
-//            LinearGradient(colors: [
-//                Color(red: 89/255, green: 92/255, blue: 255/255),
-//                Color(red: 198/255, green: 248/255, blue: 255/255)], startPoint: .top, endPoint: .bottom)
-//                .ignoresSafeArea()
+            //            Color.blue
+            //                .ignoresSafeArea()
+            //            LinearGradient(colors: [
+            //                Color(red: 89/255, green: 92/255, blue: 255/255),
+            //                Color(red: 198/255, green: 248/255, blue: 255/255)], startPoint: .top, endPoint: .bottom)
+            //                .ignoresSafeArea()
             LinearGradient(colors: [
                 Color(red: 255/255, green: 147/255, blue: 15/255),
                 Color(red: 255/255, green: 249/255, blue: 91/255)], startPoint: .top, endPoint: .bottom)
-                .ignoresSafeArea()
-
+            .ignoresSafeArea()
+            
             
             VStack {
                 Spacer()
                 
                 Text("Guess the Flag")
-                        .font(.largeTitle.weight(.bold))
-                        .foregroundStyle(.black)
+                //                        .font(.largeTitle.weight(.bold))
+                    .titleStyled(boldness: .bold)
+                    .foregroundStyle(.black)
                 
                 Spacer()
                 
@@ -50,7 +74,8 @@ struct ContentView: View {
                             .font(.subheadline.weight(.heavy))
                         Text(countries[correctAnswer])
                             .foregroundStyle(.black)
-                            .font(.largeTitle.weight(.semibold))
+                        //                            .font(.largeTitle.weight(.semibold))
+                            .titleStyled(boldness: .semibold)
                     }
                     ForEach(0..<3) { number in
                         Button {
@@ -61,9 +86,10 @@ struct ContentView: View {
                                 gameOver = true
                             }
                         } label: {
-                            Image(countries[number])
-                                .clipShape(.rect(cornerRadius: 20.0))
-                                .shadow(radius: 5)
+                            //                            Image(countries[number])
+                            //                                .clipShape(.rect(cornerRadius: 20.0))
+                            //                                .shadow(radius: 5)
+                            FlagImage(contryName: countries[number])
                         }
                     }
                 }
