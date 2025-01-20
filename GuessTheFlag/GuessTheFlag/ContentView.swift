@@ -14,6 +14,9 @@ struct ContentView: View {
     
     @State private var showingScore = false
     @State private var scoreTitle = ""
+    @State private var userScore = 0
+    @State private var remainingQuestions = 7
+    @State private var gameOver = false
     
     
     var body: some View {
@@ -51,7 +54,12 @@ struct ContentView: View {
                     }
                     ForEach(0..<3) { number in
                         Button {
-                            flagTapped(number)
+                            if remainingQuestions > 0 {
+                                flagTapped(number)
+                                remainingQuestions -= 1
+                            } else {
+                                gameOver = true
+                            }
                         } label: {
                             Image(countries[number])
                                 .clipShape(.rect(cornerRadius: 20.0))
@@ -66,7 +74,7 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 
-                Text("Score: ???")
+                Text("Score: \(userScore)")
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity, maxHeight: 70.0)
                     .background(.regularMaterial)
@@ -81,15 +89,21 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion)
         } message: {
-            Text("Your score is ???")
+            Text("Your score is \(userScore)")
+        }
+        .alert("Game Over", isPresented: $gameOver){
+            Button("Restart", action: restartGame)
+        } message: {
+            Text("Your total score is \(userScore). Play again?")
         }
     }
     
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
             scoreTitle = "Correct"
+            userScore += 10
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Wrong! That's the flag of  \(countries[number])!"
         }
         showingScore = true
     }
@@ -97,6 +111,12 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    func restartGame() {
+        userScore = 0
+        askQuestion()
+        remainingQuestions = 7
+        gameOver = false
     }
 }
 
