@@ -32,9 +32,12 @@ struct GameArea: View {
     @State private var playerShouldWin = Bool.random()
     @State private var playerWon: Bool = false
     @State private var showAlert: Bool = false
-    @State private var remainingGameRounds: Int = 9
+    @State private var remainingGameRounds: Int = 10
     @State private var gameOver: Bool = false
     @State private var playerScore: Int = 0
+    @State private var playerChoice: Int = 0
+    
+    @State private var playerMadeDecision = false
     
     var body: some View {
         ZStack {
@@ -47,7 +50,7 @@ struct GameArea: View {
                 
                 Spacer()
                 
-                Text("App Chose is \(gameDecisions[decision])")
+                Text(playerMadeDecision ? gameDecisions[decision] : "App's choice: ...")
                     .gameCardDesigned(ofColor: .red)
                     .font(.title)
                 
@@ -58,42 +61,56 @@ struct GameArea: View {
                 
 
                 
-                VStack {
-                    Button{
-                        if (remainingGameRounds != 0){
-                            gameEvaluation(choiceMade: 0)
-                            remainingGameRounds -= 1
-                        } else {
-                            gameOver = true
-                        }
-                    }label: {
-                        Text("Rock")
-                            .roundedButtonStyled(backgroundColor: .blue)
+                if (playerMadeDecision) {
+                    Button {
+                        gameEvaluation(choiceMade: playerChoice)
+                    } label : {
+                        Text("\(gameDecisions[playerChoice])")
+                            .gameCardDesigned(ofColor: .blue)
+                            .font(.title)
                     }
-                    Button{
-                        if (remainingGameRounds != 0){
-                            gameEvaluation(choiceMade: 1)
-                            remainingGameRounds -= 1
-                        } else {
-                            gameOver = true
+                        
+                } else {
+                    VStack {
+                        Button{
+                            if (remainingGameRounds != 0){
+                                playerChoice = 0
+                                remainingGameRounds -= 1
+                                playerMadeDecision = true
+                            } else {
+                                gameOver = true
+                            }
+                        }label: {
+                            Text("Rock")
+                                .roundedButtonStyled(backgroundColor: .blue)
                         }
-                    }label: {
-                        Text("Paper")
-                            .roundedButtonStyled(backgroundColor: .blue)
-                    }
-                    Button{
-                        if (remainingGameRounds != 0){
-                            gameEvaluation(choiceMade: 2)
-                            remainingGameRounds -= 1
-                        } else {
-                            gameOver = true
+                        Button{
+                            if (remainingGameRounds != 0){
+                                playerChoice = 1
+                                remainingGameRounds -= 1
+                                playerMadeDecision = true
+                            } else {
+                                gameOver = true
+                            }
+                        }label: {
+                            Text("Paper")
+                                .roundedButtonStyled(backgroundColor: .blue)
                         }
-                    }label: {
-                        Text("Scissor")
-                            .roundedButtonStyled(backgroundColor: .blue)
+                        Button{
+                            if (remainingGameRounds != 0){
+                                playerChoice = 2
+                                remainingGameRounds -= 1
+                                playerMadeDecision = true
+                            } else {
+                                gameOver = true
+                            }
+                        }label: {
+                            Text("Scissor")
+                                .roundedButtonStyled(backgroundColor: .blue)
+                        }
                     }
+                    .padding()
                 }
-                .padding()
                 Spacer()
             }
         }
@@ -140,10 +157,12 @@ struct GameArea: View {
     
     func roundreset() {
         decision = Int.random(in: 0...2)
-        playerShouldWin = Bool.random()
+        playerShouldWin.toggle()
+        playerMadeDecision = false
     }
     func gameReset() {
         playerScore = 0
+        remainingGameRounds = 10
         roundreset()
     }
 }

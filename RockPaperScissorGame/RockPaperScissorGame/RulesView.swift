@@ -45,40 +45,51 @@ extension View {
 struct RulesView: View {
     var body: some View {
         NavigationView {
-            VStack{
+            ZStack {
                 
-                Spacer()
+                Color.yellow.opacity(0.2).ignoresSafeArea()
                 
-                HStack(alignment: .center){
-                    Text("Rules")
-                        .font(.title.bold())
+                VStack{
+                    
+                    Spacer()
+                    
+                    HStack(alignment: .center){
+                        Text("Rules")
+                            .font(.title.bold())
+                    }
+                    .frame(maxWidth: .infinity)
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .leading){
+                        Text("1. Each turn of the game the app will randomly pick either rock, paper, or scissors.")
+                            .rulesStyled()
+                            .padding(.vertical)
+                        Text("2. Each turn the app will alternate between prompting the player to win or lose.")
+                            .rulesStyled()
+                            .padding(.vertical)
+                        Text("3. The player must then tap the correct move to win or lose the game.")
+                            .rulesStyled()
+                            .padding(.vertical)
+                        Text("4. If they are correct they score a point; otherwise they lose a point.")
+                            .rulesStyled()
+                            .padding(.vertical)
+                        Text("5. The game ends after 10 questions, at which point their score is shown.")
+                            .rulesStyled()
+                            .padding(.vertical)
+                    }
+                    .padding()
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: GameArea()) {
+                        Text("Continue To Game!")
+                            .foregroundStyle(.black)
+                            .roundedButtonStyled(backgroundColor: .yellow)
+                    }
+                    
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity)
-                
-                Spacer()
-                
-                VStack(alignment: .leading){
-                    Text("1. Each turn of the game the app will randomly pick either rock, paper, or scissors.")
-                        .rulesStyled()
-                    Text("2. Each turn the app will alternate between prompting the player to win or lose.")
-                        .rulesStyled()
-                    Text("3. The player must then tap the correct move to win or lose the game.")
-                        .rulesStyled()
-                    Text("4. If they are correct they score a point; otherwise they lose a point.")
-                        .rulesStyled()
-                    Text("5. The game ends after 10 questions, at which point their score is shown.")
-                        .rulesStyled()
-                }
-                .padding()
-                
-                Spacer()
-                
-                NavigationLink(destination: GameArea()) {
-                    Text("Continue To Game!")
-                        .roundedButtonStyled(backgroundColor: .green)
-                }
-                
-                Spacer()
             }
         }
     }
