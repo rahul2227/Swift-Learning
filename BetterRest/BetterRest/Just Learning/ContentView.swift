@@ -26,35 +26,44 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            Form {
-                HStack( spacing: 0) {
-                    Text("When do you want to wake up?")
-                        .font(.headline)
+            VStack{
+                Form {
+                    HStack( spacing: 0) {
+                        Text("When do you want to wake up?")
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                    }
+                    Section("Desired amount of sleep"){
+                        
+                        Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
+                    }
                     
-                    Spacer()
-                    
-                    DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
+                    Section ("Daily Coffee Intake") {
+                        Stepper("^[\(coffeeAmount) cup](inflect: true)", value: $coffeeAmount, in: 1...20)
+                    }
                 }
+                .frame(maxHeight: 300)
                 
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("Desired amount of sleep")
-                        .font(.headline)
-                    
-                    Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
-                }
+                Spacer()
                 
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("Daily coffee intake")
-                        .font(.headline)
-                    
-                    Stepper("^[\(coffeeAmount) cup](inflect: true)", value: $coffeeAmount, in: 1...20)
+                Button {
+                    calculateBedtime()
+                } label: {
+                    Text("Calculate")
+                        .frame(width: 200, height: 50)
+                        .foregroundStyle(.black)
+                        .background(.gray.opacity(0.3))
+                        .cornerRadius(25)
                 }
-            }
+                Spacer()
+                Spacer()
+                
+            }.background(Color.gray.opacity(0.1))
             .navigationTitle("BetterRest")
-            .toolbar {
-                Button("Calculate", action: calculateBedtime)
-            }
             .alert(alertTitle, isPresented: $showingAlert) {
                 Button("OK") { }
             } message: {
