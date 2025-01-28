@@ -17,6 +17,9 @@ struct ContentView: View {
     @State private var alertMessage = ""
     @State private var showingAlert = false
     
+    let paleApricot: Color = Color(red: 255/255, green: 236/255, blue: 174/255)
+    let vibrantOrange: Color = Color(red: 241/255, green: 113/255, blue: 65/255)
+    
     static var defaultWakeTime: Date {
         var components = DateComponents()
         components.hour = 7
@@ -24,29 +27,44 @@ struct ContentView: View {
         return Calendar.current.date(from: components) ?? .now
     }
     
+    
+    
     var body: some View {
         NavigationStack {
             VStack{
                 Form {
-                    HStack( spacing: 0) {
-                        Text("When do you want to wake up?")
-                            .font(.headline)
-                        
-                        Spacer()
-                        
-                        DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
-                            .labelsHidden()
+                    Section {
+                        HStack{
+                            Text("When do you want to wake up?")
+                                .font(.headline)
+                            
+                            Spacer()
+                            
+                            DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                                .labelsHidden()
+                                .foregroundStyle(paleApricot)
+                                .background(vibrantOrange)
+                                
+                        }
                     }
+                    .listRowBackground(vibrantOrange)
+                    
+                    
                     Section("Desired amount of sleep"){
                         
                         Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
                     }
+                    .listRowBackground(vibrantOrange)
                     
                     Section ("Daily Coffee Intake") {
                         Stepper("^[\(coffeeAmount) cup](inflect: true)", value: $coffeeAmount, in: 1...20)
                     }
+                    .listRowBackground(vibrantOrange)
                 }
                 .frame(maxHeight: 300)
+                .tint(paleApricot)
+                .foregroundStyle(paleApricot)
+                .scrollContentBackground(.hidden)
                 
                 Spacer()
                 
@@ -54,16 +72,19 @@ struct ContentView: View {
                     calculateBedtime()
                 } label: {
                     Text("Calculate")
+                        .font(.headline.bold())
                         .frame(width: 200, height: 50)
-                        .foregroundStyle(.black)
-                        .background(.gray.opacity(0.3))
+                        .foregroundStyle(vibrantOrange)
+                        .background(paleApricot)
                         .cornerRadius(25)
                 }
                 Spacer()
                 Spacer()
                 
-            }.background(Color.gray.opacity(0.1))
+            }
+            .background(vibrantOrange)
             .navigationTitle("BetterRest")
+            .toolbarBackground(.white, for: .navigationBar)
             .alert(alertTitle, isPresented: $showingAlert) {
                 Button("OK") { }
             } message: {
