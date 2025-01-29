@@ -16,24 +16,58 @@ struct ContentView: View {
     @State private var errorTitle = ""
     @State private var errorMessage = ""
     @State private var showError: Bool = false
+    
+    @State private var userScore = 0
+    @State private var chances = 10
+    
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    TextField("Enter your word", text: $newWord)
-                        .textInputAutocapitalization(.never)
-                }
-
-                Section {
-                    ForEach(usedWords, id: \.self) { word in
-                        HStack {
-                            Image(systemName: "\(word.count).circle")
-                            Text(word)
+            ZStack {
+                List {
+                    
+                    Section {
+                        TextField("Enter your word", text: $newWord)
+                            .textInputAutocapitalization(.never)
+                    }
+                    
+                    Section {
+                        ForEach(usedWords, id: \.self) { word in
+                            HStack {
+                                Image(systemName: "\(word.count).circle")
+                                Text(word)
+                            }
                         }
                     }
                 }
+                
+                VStack {
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    Spacer()
+                    
+                    
+                    Text("User's score is \(userScore).")
+                        .frame(maxWidth: 250, maxHeight: 75)
+                        .background(Color.yellow)
+                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                    
+                    Spacer()
+                }
             }
-            .navigationTitle(rootWord)
+//            .navigationTitle(rootWord)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing){
+                    Button("Restart") {startGame()}
+                }
+                ToolbarItem(placement: .principal) {
+                    Text(rootWord)
+                        .font(.largeTitle.bold())
+                }
+            }
             .onSubmit(addNewWord)
             .onAppear(perform: startGame)
             .alert(errorTitle, isPresented: $showError) {
@@ -45,7 +79,17 @@ struct ContentView: View {
     func addNewWord() {
         let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         
-        guard answer.count > 0 else { return }
+        guard answer.count > 3 else {
+            wordError(title: "Short word", message: "Word is too short!")
+            newWord = ""
+            return
+        }
+        
+        guard answer != rootWord else {
+            wordError(title: "Can't do that", message: "You can't use the start word!")
+            newWord = ""
+            return
+        }
         
         guard isOriginal(answer) else {
             wordError(title: "Word already used", message: "Be more original!")
@@ -58,11 +102,21 @@ struct ContentView: View {
             newWord = ""
             return
         }
-
+        
         guard isReal(answer) else {
             wordError(title: "Word not recognized", message: "You can't just make them up, you know!")
             newWord = ""
             return
+        }
+        
+        // calculate user score
+        userScore += 5
+        if(answer.count < rootWord.count || answer.count > rootWord.count) {
+            userScore -= 1
+        }
+        if chances != 0 {
+            userScore -= 1
+            chances -= 1
         }
         
         withAnimation {
@@ -76,6 +130,12 @@ struct ContentView: View {
             if let startWords = try? String(contentsOf: startWordURL, encoding: .utf8) {
                 let allWords = startWords.components(separatedBy: "\n")
                 rootWord = allWords.randomElement() ?? "silkworm"
+                
+                // resetting the list to empty
+                usedWords = []
+                // resetting the user score
+                userScore = 0
+                
                 return
             }
         }
