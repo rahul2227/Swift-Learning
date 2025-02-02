@@ -14,7 +14,8 @@ struct AnimationsApp: App {
 //            ContentView()
 //            BindingAnimation()
 //            WaveAnimation()
-            ExplicitAnimations()
+//            ExplicitAnimations()
+            SnakeAnimation()
         }
     }
 }
