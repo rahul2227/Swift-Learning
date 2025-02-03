@@ -140,7 +140,6 @@ struct ContentView: View {
                 .clipShape(.rect(cornerRadius: 20))
                 
                 Spacer()
-                Spacer()
                 
                 UserScoreView(userScore: $userScore)
                 
