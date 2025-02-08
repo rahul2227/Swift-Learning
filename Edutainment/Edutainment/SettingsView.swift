@@ -12,11 +12,21 @@ struct SettingsView: View {
     var numberOfQuestions = [5, 10, 15]
     
     @State private var selectedNumberOfQuestions = 5
+    @State private var selectedTableToPractice = 0
+    @State private var buttonSelected  = true
+    
+    var linearGradient: LinearGradient {
+        LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+    
+    var linearGradientWhite: LinearGradient {
+        LinearGradient(gradient: Gradient(colors: [Color.white, Color.white]), startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
     
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                linearGradient
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack {
@@ -32,6 +42,7 @@ struct SettingsView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    .padding()
                     
                     Text("Choose the table you want to practice")
                         .font(.largeTitle)
@@ -41,13 +52,14 @@ struct SettingsView: View {
                     HStack {
                         ForEach(1..<4) { number in
                             Button {
-                                // Do nothing
+                                selectedTableToPractice = number
+                                buttonSelected = true
                             } label: {
                                 Text("\(number)")
                                     .font(.title.bold())
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle((buttonSelected && selectedTableToPractice == number) ? .white : .black)
                                     .frame(width: 70, height: 70)
-                                    .background(.white)
+                                    .background((buttonSelected && selectedTableToPractice == number) ? linearGradient : linearGradientWhite)
                                     .clipShape(Circle())
                                     .padding(.horizontal)
                             }
@@ -59,7 +71,7 @@ struct SettingsView: View {
                         ForEach(4..<7) { number in
                             
                             Button {
-                                // Do nothing
+                                selectedTableToPractice = number
                             } label: {
                                 Text("\(number)")
                                     .font(.title.bold())
@@ -76,7 +88,7 @@ struct SettingsView: View {
                     HStack {
                         ForEach(7..<10) { number in
                             Button {
-                                // Do nothing
+                                selectedTableToPractice = number
                             } label: {
                                 Text("\(number)")
                                     .font(.title.bold())
@@ -90,16 +102,31 @@ struct SettingsView: View {
                     }
                     .padding()
                     
-                    Button {
-                        // Do nothing
-                    } label: {
-                        Text("0")
-                            .font(.title.bold())
-                            .foregroundStyle(.black)
-                            .frame(width: 70, height: 70)
-                            .background(.white)
-                            .clipShape(Circle())
+                    // TODO: Add this after adding functionality for second number
+                    //                    Button {
+                    //                        // Do nothing
+                    //                    } label: {
+                    //                        Text("0")
+                    //                            .font(.title.bold())
+                    //                            .foregroundStyle(.black)
+                    //                            .frame(width: 70, height: 70)
+                    //                            .background(.white)
+                    //                            .clipShape(Circle())
+                    //                            .padding()
+                    //                    }
+                    
+                    
+                    NavigationLink(destination: GameView(
+                        numberOfQuestionsToBeAsked: selectedNumberOfQuestions, selectedNumberToPractice: selectedTableToPractice
+                    )) {
+                        Text("Start the Game ?")
+                        
+                            .font(.title2.bold())
+                            .foregroundStyle(.white)
                             .padding()
+                            .frame(width: 300)
+                            .background(.purple.gradient)
+                            .clipShape(RoundedRectangle(cornerRadius: 25))
                     }
                 }
             }
