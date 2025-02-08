@@ -8,31 +8,20 @@
 import SwiftUI
 
 
-struct Questions {
-    private var numberofQuestions: Int
-    let questions: [Int]
-    
-    init(numberofQuestions: Int) {
-        self.numberofQuestions = numberofQuestions
-        self.questions = (0..<numberofQuestions).map { _ in Int.random(in: 0...12) }
-    }
-}
 
 struct GameView: View {
     @Environment(\.dismiss) var dismiss
     
     @State var numberOfQuestionsToBeAsked: Int
-    @State var selectedNumberToPractice: Int
-    
-    var questions: [Int] {
-       let out = Questions(numberofQuestions: numberOfQuestionsToBeAsked)
-        return out.questions
-    }
+    var selectedNumberToPractice: Int
+    var questions: [Int]
     
     @State private var userAnswer = ""
     
     @State private var answerIsCorrect: Bool = false
     @State private var userHasSubmittedAnswer: Bool = false
+    
+    @State private var isShowingAlert: Bool = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     
@@ -44,7 +33,7 @@ struct GameView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack {
-                    Text("\(selectedNumberToPractice) x \(questions[0])")
+                    Text("\(selectedNumberToPractice) x \(questions[numberOfQuestionsToBeAsked - 1])")
                         .font(.largeTitle.bold())
                         .foregroundStyle(.white)
                     
@@ -60,13 +49,14 @@ struct GameView: View {
                         .keyboardType(.numberPad)
                     
                     Button{
-                        if Int(userAnswer)! == selectedNumberToPractice * questions[0] {
+                        if Int(userAnswer)! == selectedNumberToPractice * questions[numberOfQuestionsToBeAsked - 1] {
                             answerIsCorrect = true
                         } else {
                             answerIsCorrect = false
                         }
                         
                         userHasSubmittedAnswer = true
+                        callAlert()
                     } label: {
                         Text("Check Answer")
                             .font(.title2.bold())
@@ -94,10 +84,37 @@ struct GameView: View {
                     }.symbolEffect(.bounce.down.byLayer, options: .nonRepeating)
                 }
             }
+            .alert(isPresented: $isShowingAlert) {
+                if numberOfQuestionsToBeAsked != 0{
+                    if answerIsCorrect {
+                        return Alert(title: Text("Correct!"), message: Text("You got it right!"), dismissButton: .default(Text("Continue")))
+                    } else {
+                        return Alert(title: Text("Oops!"), message: Text("You got it wrong!"), dismissButton: .default(Text("Continue")))
+                    }
+                } else {
+                    return Alert(title: Text("Game Over!"), message: Text("Game is over!"), primaryButton: .default(Text("restart Game?")), secondaryButton: .destructive(Text("Don't wanna play")))
+                }
+            }
         }
+    }
+    
+    func callAlert() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            isShowingAlert = true
+            roundChange()
+        }
+        // TODO: Make GameView to be rootview
+        // Make it that Game over function will lead to the settings view
+        // TODO: Fix the bug of when the game ends
+    }
+    
+    func roundChange() {
+        numberOfQuestionsToBeAsked -= 1
+        userHasSubmittedAnswer = false
+        userAnswer = ""
     }
 }
 
 #Preview {
-    GameView(numberOfQuestionsToBeAsked: 5, selectedNumberToPractice: 5)
+    GameView(numberOfQuestionsToBeAsked: 5, selectedNumberToPractice: 5, questions: [4,6])
 }

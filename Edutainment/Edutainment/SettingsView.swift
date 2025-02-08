@@ -7,6 +7,25 @@
 
 import SwiftUI
 
+struct Questions {
+    private var numberofQuestions: Int
+    let questions: [Int]
+    
+    init(numberofQuestions: Int) {
+        self.numberofQuestions = numberofQuestions
+        self.questions = []
+    }
+    
+    func getRandomQuestions() -> [Int] {
+        var questions: [Int] = []
+        for i in 1...numberofQuestions {
+            questions.append(i)
+        }
+        questions.shuffle()
+        return questions
+    }
+}
+
 struct SettingsView: View {
     
     var numberOfQuestions = [5, 10, 15]
@@ -21,6 +40,12 @@ struct SettingsView: View {
     
     var linearGradientWhite: LinearGradient {
         LinearGradient(gradient: Gradient(colors: [Color.white, Color.white]), startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+    
+    var questions: [Int] {
+        let questionInstance = Questions(numberofQuestions: selectedNumberOfQuestions)
+        let questions = questionInstance.getRandomQuestions( )
+        return questions
     }
     
     var body: some View {
@@ -75,9 +100,9 @@ struct SettingsView: View {
                             } label: {
                                 Text("\(number)")
                                     .font(.title.bold())
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle((buttonSelected && selectedTableToPractice == number) ? .white : .black)
                                     .frame(width: 70, height: 70)
-                                    .background(.white)
+                                    .background((buttonSelected && selectedTableToPractice == number) ? linearGradient : linearGradientWhite)
                                     .clipShape(Circle())
                                     .padding(.horizontal)
                             }
@@ -92,9 +117,9 @@ struct SettingsView: View {
                             } label: {
                                 Text("\(number)")
                                     .font(.title.bold())
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle((buttonSelected && selectedTableToPractice == number) ? .white : .black)
                                     .frame(width: 70, height: 70)
-                                    .background(.white)
+                                    .background((buttonSelected && selectedTableToPractice == number) ? linearGradient : linearGradientWhite)
                                     .clipShape(Circle())
                                     .padding(.horizontal)
                             }
@@ -117,7 +142,8 @@ struct SettingsView: View {
                     
                     
                     NavigationLink(destination: GameView(
-                        numberOfQuestionsToBeAsked: selectedNumberOfQuestions, selectedNumberToPractice: selectedTableToPractice
+                        numberOfQuestionsToBeAsked: selectedNumberOfQuestions, selectedNumberToPractice: selectedTableToPractice,
+                        questions: questions
                     )) {
                         Text("Start the Game ?")
                         
