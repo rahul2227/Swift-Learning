@@ -30,13 +30,16 @@ struct AddExpense: View {
                     }
                 }.pickerStyle(.segmented)
                 
-                TextField("Enter amount", value: $amount, format: .currency(code: "USD"))
+                TextField("Amount", value: $amount, format: .currency(code: "USD"))
                     .keyboardType(.decimalPad)
             }
             .navigationTitle(Text("Add Expense"))
             .toolbar {
                 Button ("Save") {
-                    expenses.items.append(ExpenseItem(name: name, type: type, amount: amount))
+                    
+                    let item = ExpenseItem(name: name, type: type, amount: amount)
+                    
+                    expenses.items.append(item)
                     
                     dismiss()
                 }
