@@ -25,6 +25,8 @@ struct GameView: View {
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     
+    @State private var gameHasEnded: Bool = false
+    
     
     var body: some View {
         NavigationStack{
@@ -56,6 +58,11 @@ struct GameView: View {
                         }
                         
                         userHasSubmittedAnswer = true
+                        
+                        if numberOfQuestionsToBeAsked == 0 {
+                            gameHasEnded = true
+                        }
+                        
                         callAlert()
                     } label: {
                         Text("Check Answer")
