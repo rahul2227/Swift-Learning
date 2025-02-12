@@ -35,4 +35,8 @@ class Expenses {
         
         items = []
     }
+    
+    func totalAmount() -> Double {
+        return items.reduce(0) { $0 + $1.amount }
+    }
 }
