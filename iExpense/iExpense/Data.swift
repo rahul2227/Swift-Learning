@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import SwiftUI
 
 struct ExpenseItem : Identifiable, Codable { // By conforming to this we can also skip the id part in for each inside list or wherever we need to identify expenses uniquely
     var id = UUID() // Basically by conforming to Identifiable we are guaranteeing that our Expense Item is Uniquely identifiable
@@ -22,9 +23,28 @@ struct BudgetItem : Identifiable, Codable {
 }
 
 enum ColorPallete {
+    
     case black, blue, orange, platinum, white
+}
+
+extension ColorPallete: ShapeStyle {
     
-    
+    var value: Color {
+        get {
+            switch self {
+            case .black:
+                return Color(red: 0/255, green: 0/255, blue: 0/255)
+            case .blue:
+                return Color(red: 20/255, green: 33/255, blue: 61/255)
+            case .orange:
+                return Color(red: 252/255, green: 163/255, blue: 17/255)
+            case .platinum:
+                return Color(red: 229/255, green: 229/255, blue: 229/255)
+            case .white:
+                return Color(red: 255/255, green: 255/255, blue: 255/255)
+            }
+        }
+    }
 }
 
 @Observable

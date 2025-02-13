@@ -28,22 +28,31 @@ struct HeaderView: View {
         return expenses.totalAmount()
     }
     
+    var backgroundColor: Color {
+        ColorPallete.orange.value
+    }
+    
     var body: some View {
         
         VStack (alignment: .leading) {
-            Text("\(currentMonth)")
+            Text("\(currentMonth) : \(expenses.budgetForMonth(currentMonth).formatted())")
                 .font(.headline)
                 .foregroundStyle(.white)
-            Text("\(totalAmount.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))")
+            Text("Spent: \(totalAmount.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))")
                 .font(.title.bold())
                 .foregroundStyle(.white)
             HStack {
-                Image(systemName: "hand.thumbsup.fill")
-                Text("Great! This month you saved \(savedBudgetForMonth.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))")
+                if savedBudgetForMonth > 0 {
+                    Image(systemName: "hand.thumbsup.fill")
+                    Text("Great! This month you saved \(Locale.current.currencySymbol ?? "$") \(savedBudgetForMonth.formatted())")
+                } else {
+                    Image(systemName: "hand.thumbsdown.fill")
+                    Text("Woah! This month you spent \(Locale.current.currencySymbol ?? "$") \(abs(savedBudgetForMonth).formatted()) more")
+                }
             }.foregroundStyle(.white)
         }
         .padding()
-        .background(.pink)
+        .background(backgroundColor)
         .clipShape(.rect(cornerRadius: 20))
         .preferredColorScheme(.dark)
     }

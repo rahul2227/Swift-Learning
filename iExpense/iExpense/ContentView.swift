@@ -25,17 +25,19 @@ struct ContentView: View {
                             VStack(alignment: .leading){
                                 Text(item.name)
                                     .font(.headline)
+                                    .foregroundStyle(ColorPallete.white.value)
                                 Text(item.type)
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(ColorPallete.platinum.value)
                             }
                             
                             Spacer()
                             
                             Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "EUR"))
+                                .foregroundStyle(ColorPallete.white.value)
                         }
+                        .listRowBackground(getLisBackgroundColor(for: item.amount).opacity(0.5))
                     }
                     .onDelete(perform: deleteItems)
-                    .listRowBackground(Color.green.opacity(0.4))
                 }
                 .scrollContentBackground(.hidden)
             }
@@ -70,6 +72,16 @@ struct ContentView: View {
     
     func deleteItems(at offsets: IndexSet) {
         expenses.items.remove(atOffsets: offsets)
+    }
+    
+    func getLisBackgroundColor(for amount: Double) -> Color {
+        if amount <= 10 {
+            return .green
+        } else if amount <= 100 {
+            return .yellow
+        }else {
+            return .red
+        }
     }
 }
 
