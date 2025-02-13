@@ -15,12 +15,32 @@ struct ExpenseItem : Identifiable, Codable { // By conforming to this we can als
     let amount: Double
 }
 
+struct BudgetItem : Identifiable, Codable {
+    var id = UUID()
+    let month: String
+    let amount: Double
+}
+
+enum ColorPallete {
+    case black, blue, orange, platinum, white
+    
+    
+}
+
 @Observable
 class Expenses {
     var items = [ExpenseItem]() {
         didSet {
             if let encodedData = try? JSONEncoder().encode(items) {
                 UserDefaults.standard.set(encodedData, forKey: "Items")
+            }
+        }
+    }
+    
+    var monthlyBudgets = [BudgetItem]() {
+        didSet {
+            if let encodedData = try? JSONEncoder().encode(monthlyBudgets) {
+                UserDefaults.standard.set(encodedData, forKey: "Budgets")
             }
         }
     }
@@ -33,10 +53,22 @@ class Expenses {
             }
         }
         
+        if let savedBudgets = UserDefaults.standard.data(forKey: "Budgets") {
+            if let decodedBudgets = try? JSONDecoder().decode([BudgetItem].self, from: savedBudgets) {
+                monthlyBudgets = decodedBudgets
+                return
+            }
+        }
+        
         items = []
+        monthlyBudgets = []
     }
     
     func totalAmount() -> Double {
         return items.reduce(0) { $0 + $1.amount }
+    }
+    
+    func budgetForMonth(_ month: String) -> Double {
+        return monthlyBudgets.first(where: { $0.month == month })?.amount ?? 0
     }
 }

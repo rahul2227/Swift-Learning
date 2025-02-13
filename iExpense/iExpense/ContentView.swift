@@ -45,7 +45,7 @@ struct ContentView: View {
                 // This is the button for adding budget
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Add Budget") {
-//                        showAddItemView = true
+                        showAddBudgetView = true
                     }
                 }
                 
@@ -60,9 +60,12 @@ struct ContentView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showAddItemView, content: { AddExpense(expenses: expenses)
+            .sheet(isPresented: $showAddItemView, content: { AddExpense(expenses: expenses, isBudgetMode: false)
             })
-        }
+            .sheet(isPresented: $showAddBudgetView, content: {
+                AddExpense(expenses: expenses, isBudgetMode: true)
+            })
+        }.preferredColorScheme(.dark)
     }
     
     func deleteItems(at offsets: IndexSet) {

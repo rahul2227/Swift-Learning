@@ -17,6 +17,13 @@ struct HeaderView: View {
         return monthStr
     }
     
+    
+    var savedBudgetForMonth: Double {
+        let monthBudget = expenses.budgetForMonth(currentMonth)
+        
+        return monthBudget - totalAmount
+    }
+    
     var totalAmount: Double {
         return expenses.totalAmount()
     }
@@ -32,12 +39,13 @@ struct HeaderView: View {
                 .foregroundStyle(.white)
             HStack {
                 Image(systemName: "hand.thumbsup.fill")
-                Text("Great! You saved this much in this month")
+                Text("Great! This month you saved \(savedBudgetForMonth.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))")
             }.foregroundStyle(.white)
         }
         .padding()
-        .background(.purple.gradient)
+        .background(.pink)
         .clipShape(.rect(cornerRadius: 20))
+        .preferredColorScheme(.dark)
     }
 }
 
