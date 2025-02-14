@@ -7,6 +7,28 @@
 
 import SwiftUI
 
+struct ListItemView: View {
+    
+    let item: ExpenseItem
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading){
+                Text(item.name)
+                    .font(.headline)
+                    .foregroundStyle(ColorPallete.white.value)
+                Text(item.type)
+                    .foregroundStyle(ColorPallete.platinum.value)
+            }
+            
+            Spacer()
+            
+            Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "EUR"))
+                .foregroundStyle(ColorPallete.white.value)
+        }
+    }
+}
+
 struct ContentView: View {
     
     @State var expenses = Expenses()
@@ -14,30 +36,37 @@ struct ContentView: View {
     @State var showAddItemView: Bool = false
     @State var showAddBudgetView: Bool = false // The add expense view can be reused to add budget as well
     
+    var personalItems: [ExpenseItem] {
+        expenses.items.filter{$0.type == "Personal"}
+    }
+    
+    var businessItems: [ExpenseItem] {
+        expenses.items.filter{$0.type == "Business"}
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
                 HeaderView(expenses: expenses)
                 List {
                     
-                    ForEach(expenses.items) { item in
-                        HStack {
-                            VStack(alignment: .leading){
-                                Text(item.name)
-                                    .font(.headline)
-                                    .foregroundStyle(ColorPallete.white.value)
-                                Text(item.type)
-                                    .foregroundStyle(ColorPallete.platinum.value)
-                            }
-                            
-                            Spacer()
-                            
-                            Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "EUR"))
-                                .foregroundStyle(ColorPallete.white.value)
+                    Section("Personal Expenses") {
+                        ForEach(personalItems) { item in
+                            ListItemView(item: item)
+                                .listRowBackground(getLisBackgroundColor(for: item.amount).opacity(0.5))
                         }
-                        .listRowBackground(getLisBackgroundColor(for: item.amount).opacity(0.5))
+                        .onDelete(perform: expenses.removeItems)
                     }
-                    .onDelete(perform: deleteItems)
+                    
+                    Section("Business Expenses") {
+                        ForEach(businessItems) { item in
+                            ListItemView(item: item)
+                                .listRowBackground(getLisBackgroundColor(for: item.amount).opacity(0.5))
+                        }
+                        .onDelete (perform: expenses.removeItems)
+                    }
+                    
+                    
                 }
                 .scrollContentBackground(.hidden)
             }
@@ -68,10 +97,6 @@ struct ContentView: View {
                 AddExpense(expenses: expenses, isBudgetMode: true)
             })
         }.preferredColorScheme(.dark)
-    }
-    
-    func deleteItems(at offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
     }
     
     func getLisBackgroundColor(for amount: Double) -> Color {

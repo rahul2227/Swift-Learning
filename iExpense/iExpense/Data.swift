@@ -91,4 +91,8 @@ class Expenses {
     func budgetForMonth(_ month: String) -> Double {
         return monthlyBudgets.first(where: { $0.month == month })?.amount ?? 0
     }
+    
+    func removeItems(at offsets: IndexSet) {
+        self.items.remove(atOffsets: offsets)
+    }
 }

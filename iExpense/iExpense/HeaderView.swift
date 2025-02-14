@@ -52,7 +52,7 @@ struct HeaderView: View {
             }.foregroundStyle(.white)
         }
         .padding()
-        .background(backgroundColor)
+        .background(backgroundColor.opacity(0.9))
         .clipShape(.rect(cornerRadius: 20))
         .preferredColorScheme(.dark)
     }
