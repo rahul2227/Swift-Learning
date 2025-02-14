@@ -13,9 +13,9 @@ struct AnimationsApp: App {
         WindowGroup {
 //            ContentView()
 //            BindingAnimation()
-//            WaveAnimation()
+            WaveAnimation()
 //            ExplicitAnimations()
-            SnakeAnimation()
+//            SnakeAnimation()
         }
     }
 }
